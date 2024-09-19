@@ -1,16 +1,40 @@
-import json
 import requests
 from time import sleep
-from os import system
+from os import system, makedirs
 
-trackName = "where am i" #search phrase
-Searchtags = ["punk", "british"] #tags to filter
-maxListeners = 1000 #max listeners, set to some big number to remove this
+trackName = "Mental Day Notes" # search phrase
+Searchtags = ["gaze"] # tags to filter
+maxListeners = 10000 # max listeners, set to some big number to remove this
+startWithSetup = True # if you wanna use this with the setup in the begining, set this to true, if you wanna skip it, set it to false
 
-APIKey = ""  # Your LastFM API Key
+APIKey = "839468de11b1008ae280e3fbf436e10"  # Your LastFM API Key (Get one here https://www.last.fm/api/account/create, just label it anything, doesn't matter too much!!)
 
 foundTab = []
 repeat = []
+
+def Setup():
+    system("cls")
+    def tagToTable(tagString : str):
+        return tagString.strip().split(",")
+
+    global trackName
+    global Searchtags
+    print("Via's last.fm Searcher!! (set up the api key in the 'GenreFilter.py' file if you haven't already!)")
+    trackNameInput = input("Type search query here: ")
+    trackName = trackNameInput
+
+    # input the tags (waow)
+    tag = input("Type tags here seperated by commas: ")
+    Searchtags = tagToTable(tagString=tag)
+    print(Searchtags)
+
+def appendToResults(artist, track, link):
+    try:
+        makedirs("Results", exist_ok=True)
+        with open(f"Results/{trackName.strip()}-{'-'.join(Searchtags)}.txt", "a") as f:
+            f.write(f"{artist} - {track} ({link})\n\n")
+    except Exception as e:
+        print(f"Failed To Write song to file{e}")
 
 def returnTracks(TrackSearch):
     while True:
@@ -49,10 +73,14 @@ def getTags(artist):
             print(f"Unexpected error in getTags: {e}")
             return {}
 
+def checkStreaming(Track, Artist):
+    pass
+
 def filterTracks(trackTable):
     for en, track in enumerate(trackTable):
         artist = track.get("artist", "Unknown Artist")
         track_name = track.get("name", "Unknown Track")
+        link = track.get("url", "Unknown Link")
         listeners = track.get("listeners", 0)
         checked = False
 
@@ -67,6 +95,7 @@ def filterTracks(trackTable):
                         if all(any(search_tag in tag for tag in tag_list) for search_tag in search_tags_lower):
                             foundTab.append(f"{artist} - {track_name}")
                             repeat.append(artist)
+                            appendToResults(artist=artist, track=track_name, link=link)
                     
                     checked = True
                 except Exception as e:
@@ -83,9 +112,14 @@ def filterTracks(trackTable):
 
 
 if __name__ == "__main__":
+    if startWithSetup:
+        Setup()
     tracks = returnTracks(TrackSearch=trackName)
-    if 'results' in tracks and 'trackmatches' in tracks['results']:
-        trackMatches = tracks['results']['trackmatches']['track']
-        filterTracks(trackMatches)
-    else:
-        print("No track matches found.")
+    try:
+        if 'results' in tracks and 'trackmatches' in tracks['results']:
+            trackMatches = tracks['results']['trackmatches']['track']
+            filterTracks(trackMatches)
+        else:
+            print("No track matches found.")
+    except TypeError as e:
+        print(f"exepction {e}\nIs your api key correct?")
