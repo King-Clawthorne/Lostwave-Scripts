@@ -7,7 +7,7 @@ Searchtags = ["gaze"] # tags to filter
 maxListeners = 10000 # max listeners, set to some big number to remove this
 startWithSetup = True # if you wanna use this with the setup in the begining, set this to true, if you wanna skip it, set it to false
 
-APIKey = "839468de11b1008ae280e3fbf436e10"  # Your LastFM API Key (Get one here https://www.last.fm/api/account/create, just label it anything, doesn't matter too much!!)
+APIKey = ""  # Your LastFM API Key (Get one here https://www.last.fm/api/account/create, just label it anything, doesn't matter too much!!)
 
 foundTab = []
 repeat = []
