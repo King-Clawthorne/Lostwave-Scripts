@@ -2,12 +2,14 @@ import requests
 from time import sleep
 from os import system, makedirs
 
-trackName = "Mental Day Notes" # search phrase
-Searchtags = ["gaze"] # tags to filter
+trackName = "Mental Day Notes" # search phrase, it will search for any title with this phrase IN the title, its pretty easy to change this script to make it exact tho
+Searchtags = ["gaze"] # tags to filter, it checks to see if a tag has these words in it, so for example you can say "indie" and it will still catch "indie rock" or smth
 maxListeners = 10000 # max listeners, set to some big number to remove this
-startWithSetup = True # if you wanna use this with the setup in the begining, set this to true, if you wanna skip it, set it to false
+startWithSetup = True # if you wanna use this with the setup in the beginning, set this to true, if you wanna skip it, set it to false
 
-APIKey = ""  # Your LastFM API Key (Get one here https://www.last.fm/api/account/create, just label it anything, doesn't matter too much!!)
+APIKey = ""  # Your LastFM API Key (Get one here https://www.last.fm/api/account/create, just label it anything, it doesn't matter too much!!)
+
+## Don't edit anything beyond this point unless you know what ur doing
 
 foundTab = []
 repeat = []
@@ -40,7 +42,7 @@ def returnTracks(TrackSearch):
     while True:
         try:
             url = f"http://ws.audioscrobbler.com/2.0/?method=track.search&track={TrackSearch}&api_key={APIKey}&limit=10000&format=json"
-            print(url)
+            print(f"Getting tracks for trackname '{TrackSearch}'")
             response = requests.get(url=url)
             response.raise_for_status()
             return response.json()
