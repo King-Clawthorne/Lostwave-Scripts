@@ -9,13 +9,13 @@ from time import sleep
 from os import makedirs
 from re import sub
 
-query = "Mental Day Notes" # search query
+query = "we were kings" # search query
 
 Max_Retry = 10 # max retries before skipping the page
 
-jsonToggle = False # if you want a json file, better for filtering with like scripts and stuff :3
+jsonToggle = True # if you want a json file, better for filtering with like scripts and stuff :3
 
-Setup = True # set to False to turn off that initial setup
+Setup = False # set to False to turn off that initial setup
 
 # Myspace is kool so you don't need an api key or anything!! waow!!
 
@@ -67,21 +67,24 @@ class mySpace:
             def htmlToJson(html: str):
                 def oneSong(songHtml):
                     songTable = []
+                    def extract_text(soup, class_name):
+                            element = soup.find("div", {"class": class_name})
+                            return element.text.strip() if element else ""
                     for soup in songHtml:
-                        
-                        artist = soup.find("div", {"class" : "artist"})
-                        album = soup.find("div", {"class" : "album"})
-                        date = soup.find("div", {"class" : "date"})
-                        title = soup.find("div", {"class" : "title"})
-                        duration = soup.find("div", {"class" : "duration"})
+                        artist = extract_text(soup, "artist")
+                        album = extract_text(soup, "album")
+                        date = extract_text(soup, "date")
+                        title = extract_text(soup, "title")
+                        duration = extract_text(soup, "duration")
 
                         song = {
-                            "title": title.text.strip() if title else "",
-                            "album": album.text.strip() if album else "",
-                            "artist": artist.text.strip() if artist else "",
-                            "date": date.text.strip() if date else "",
-                            "duration": duration.text.strip() if duration else ""
+                            "title": title,
+                            "album": album,
+                            "artist": artist,
+                            "date": date,
+                            "duration": duration
                         }
+
 
                         songTable.append(song)
                     return songTable
@@ -119,7 +122,7 @@ class mySpace:
                 sleep(3)
                 currentRate += 1
             
-    def get_SSID(self) -> str:
+    def get_SSID(self):
         def returnHash(html) -> str:
             try:
                 soup = BeautifulSoup(html, "html.parser")
@@ -237,5 +240,3 @@ if __name__ == "__main__":
     finishedCrawler = newSearch.mainCrawler()
 
     newSearch.finishAndFormatJson(finishedCrawler)
-
-
