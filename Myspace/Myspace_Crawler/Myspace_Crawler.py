@@ -15,7 +15,7 @@ Max_Retry = 10 # max retries before skipping the page
 
 jsonToggle = True # if you want a json file, better for filtering with like scripts and stuff :3
 
-Setup = False # set to False to turn off that initial setup
+Setup = True # set to False to turn off that initial setup
 
 # Myspace is kool so you don't need an api key or anything!! waow!!
 
